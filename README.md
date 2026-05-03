@@ -18,7 +18,7 @@ The system follows the **ETSI GS QKD 014** standard for key management and imple
 |-------|-----------|---------------|----------|
 | **L1 — QKD-OTP** | XOR + HMAC-SHA256 | Information-theoretic (perfect secrecy) | ⌈\|m\|/32⌉ + 1 keys |
 | **L2 — Quantum-Aided AES** | HKDF-SHA256 → AES-256-GCM | Computational (quantum-seeded) | 1 key |
-| **L3 — Hybrid QKD⊕PQC** | ML-KEM-1024 ⊕ QKD → AES-256-GCM | Computational (dual-layer) ⭐ | 1 key |
+| **L3 — Hybrid QKD⊕PQC** | ML-KEM-1024 ⊕ QKD → AES-256-GCM | Computational (dual-layer) | 1 key |
 
 The ASPE selects the highest feasible level based on pool health thresholds (θ₁, θ₂, θ₃). Users can also override the level manually.
 
