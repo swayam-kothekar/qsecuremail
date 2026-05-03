@@ -2,8 +2,6 @@
 
 **A QKD-Enhanced Email System with Adaptive Security Policy Engine and Hybrid QKD⊕PQC Encryption**
 
-Built as a reference implementation of the research paper by Swayam Kothekar, A.P. Shah Institute of Technology, Thane, Maharashtra, India.
-
 ---
 
 ## Overview
