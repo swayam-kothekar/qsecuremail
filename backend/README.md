@@ -23,11 +23,19 @@ npm install
 
 ## Configuration
 
-Copy `.env.example` to `.env` and configure:
-
 ```bash
 cp .env.example .env
 ```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `5000` | Port the Express server listens on |
+| `NODE_ENV` | `development` | `development` or `production` |
+| `JWT_SECRET` | *(required)* | Sign JWT tokens. Generate with: `openssl rand -hex 64` |
+| `ADMIN_EMAIL` | `admin@qsecuremail.local` | Email granted admin audit log access |
+| `KM_POOL_SIZE` | `1000` | Keys pre-generated in the QKD pool on startup |
+| `KM_REPLENISH_RATE` | `0` | Keys added per hour automatically (`0` = disabled) |
+| `CORS_ORIGIN` | `http://localhost:5173` | Allowed frontend origin |
 
 ## Running
 
@@ -49,8 +57,7 @@ npm start
 
 ### Email
 - `POST /api/email/send` - Send encrypted or normal email
-- `GET /api/email/inbox` - Fetch inbox with pagination
-- `GET /api/email/count` - Get total email count
+- `GET /api/email/inbox?limit=20&offset=0` - Fetch inbox (20 emails per page)
 
 ### ASPE
 - `GET /api/aspe/status` - Get ASPE status and recommendations
@@ -97,6 +104,13 @@ backend/
 ├── keys/                     # ML-KEM keypairs
 └── logs/                     # Application logs
 ```
+
+## Architecture Notes
+
+- **Per-user EmailService**: Each authenticated user gets their own `EmailService` instance stored in an `emailServiceMap` keyed by email address. Logging in with a second account does not affect the first user's IMAP connection.
+- **Fresh IMAP per fetch**: A new `Imap` connection is created for each inbox fetch (reusing a connection after `.end()` crashes the imap parser). A `_fetchingEmails` semaphore prevents concurrent fetches.
+- **Key pool is in-memory**: The `KMSimulator` generates a new pool on every server start. Emails encrypted in a previous session will show a decryption error after restart (expected for a simulator).
+- **JWT + session integrity**: `/api/auth/verify` checks both the JWT signature and whether this user's `EmailService` is initialized. If the backend restarted, the token is invalidated to force re-login.
 
 ## Security Features
 
