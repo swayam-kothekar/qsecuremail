@@ -3,7 +3,7 @@
  * Implements three encryption levels:
  * - Level 1: Authenticated QKD-OTP
  * - Level 2: Quantum-Aided AES-256-GCM
- * - Level 3: Hybrid QKD⊕PQC (Novel)
+ * - Level 3: Hybrid QKD⊕PQC
  */
 
 import crypto from 'crypto';
@@ -209,7 +209,7 @@ class EncryptionEngine {
   }
 
   /**
-   * LEVEL 3: Hybrid QKD⊕PQC (Novel Contribution)
+   * LEVEL 3: Hybrid QKD⊕PQC
    * Combines ML-KEM-1024 with QKD-derived keys
    * Section 4.3 of paper
    */

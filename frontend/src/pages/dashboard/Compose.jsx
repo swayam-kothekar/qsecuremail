@@ -76,7 +76,7 @@ export default function Compose() {
   const levels = [
     { level: 1, name: 'Level 1: QKD-OTP', desc: 'Information-theoretic security with HMAC', icon: <Shield size={16} />, color: '#4ade80', accentBg: 'rgba(74,222,128,0.08)', accentBorder: 'rgba(74,222,128,0.25)', keyUsage: `~${Math.ceil((body.length || 1024) / 32) + 1} keys` },
     { level: 2, name: 'Level 2: QKD-AES', desc: 'Quantum-aided AES-256-GCM', icon: <Lock size={16} />, color: '#a855f7', accentBg: 'rgba(168,85,247,0.08)', accentBorder: 'rgba(168,85,247,0.25)', keyUsage: '1 key' },
-    { level: 3, name: 'Level 3: Hybrid QKD⊕PQC', desc: 'ML-KEM-1024 fused with QKD (Novel)', icon: <Key size={16} />, color: '#00d4ff', accentBg: 'rgba(0,212,255,0.08)', accentBorder: 'rgba(0,212,255,0.25)', keyUsage: '1 key' },
+    { level: 3, name: 'Level 3: Hybrid QKD⊕PQC', desc: 'ML-KEM-1024 fused with QKD', icon: <Key size={16} />, color: '#00d4ff', accentBg: 'rgba(0,212,255,0.08)', accentBorder: 'rgba(0,212,255,0.25)', keyUsage: '1 key' },
   ];
   const recLevel = aspeRecommendation?.recommendedLevel || 3;
 
@@ -200,7 +200,7 @@ export default function Compose() {
                   <Info size={14} color="rgba(0,212,255,0.6)" />
                   <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(0,212,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Encryption Info</p>
                 </div>
-                {['Level 1: Perfect secrecy, high key usage', 'Level 2: Efficient, quantum-seeded AES', 'Level 3: Hybrid dual-layer (Novel)'].map(t => (
+                {['Level 1: Perfect secrecy, high key usage', 'Level 2: Efficient, quantum-seeded AES', 'Level 3: Hybrid dual-layer QKD⊕PQC'].map(t => (
                   <p key={t} style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginBottom: 4, display: 'flex', gap: 6 }}><span style={{ color: '#00d4ff' }}>→</span>{t}</p>
                 ))}
               </div>

@@ -214,14 +214,6 @@ Open **http://localhost:5173**
 
 ---
 
-## Author
-
-**Swayam Kothekar**  
-Department of Computer Engineering  
-A.P. Shah Institute of Technology, Thane, Maharashtra, India
-
----
-
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
