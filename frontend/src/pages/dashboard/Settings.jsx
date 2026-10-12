@@ -77,7 +77,7 @@ export default function Settings() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, padding: 4, background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.07)', marginBottom: 28, width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: 4, padding: 4, background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.07)', marginBottom: 28, width: 'fit-content', maxWidth: '100%', overflowX: 'auto' }}>
         {tabs.map(t => (
           <button key={t.id} onClick={() => { setActiveTab(t.id); setError(''); setSuccess(''); }}
             style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 20px', borderRadius: 9, fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', background: activeTab === t.id ? '#fff' : 'transparent', color: activeTab === t.id ? '#000' : 'rgba(255,255,255,0.4)', transition: 'all 0.2s' }}>
@@ -206,12 +206,12 @@ export default function Settings() {
               <p style={{ fontSize: 14 }}>No audit entries yet</p>
             </div>
           ) : (
-            <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: 620, borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     {['Time', 'Direction', 'Counterpart', 'Level', 'Algorithm'].map(h => (
-                      <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{h}</th>
+                      <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em', whiteSpace: 'nowrap' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -220,15 +220,15 @@ export default function Settings() {
                     <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
                       onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>{new Date(entry.timestamp).toLocaleString()}</td>
-                      <td style={{ padding: '12px 20px' }}>
+                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.5)', whiteSpace: 'nowrap' }}>{new Date(entry.timestamp).toLocaleString()}</td>
+                      <td style={{ padding: '12px 20px', whiteSpace: 'nowrap' }}>
                         <span style={{ fontSize: 10, padding: '3px 10px', borderRadius: 999, background: entry.direction === 'outgoing' ? 'rgba(96,165,250,0.1)' : 'rgba(74,222,128,0.1)', color: entry.direction === 'outgoing' ? '#60a5fa' : '#4ade80', fontWeight: 600 }}>
                           {entry.direction}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{entry.counterpart}</td>
-                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>Level {entry.level}</td>
-                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{entry.algorithm}</td>
+                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.6)', whiteSpace: 'nowrap' }}>{entry.counterpart}</td>
+                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.6)', whiteSpace: 'nowrap' }}>Level {entry.level}</td>
+                      <td style={{ padding: '12px 20px', fontSize: 12, color: 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap' }}>{entry.algorithm}</td>
                     </tr>
                   ))}
                 </tbody>
