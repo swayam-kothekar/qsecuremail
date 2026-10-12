@@ -62,7 +62,8 @@ console.log('[1/5] Initializing Key Management Simulator...');
 const kmSimulator = new KMSimulator({
   poolSize: parseInt(process.env.KM_POOL_SIZE) || 1000,
   keySize: 32,
-  replenishmentRate: parseInt(process.env.KM_REPLENISH_RATE) || 0
+  replenishmentRate: parseInt(process.env.KM_REPLENISH_RATE) || 0,
+  storagePath: path.join(__dirname, 'keys', 'keypool.json')
 });
 
 // 2. Encryption Engine
@@ -188,6 +189,7 @@ app.listen(PORT, () => {
 
 process.on('SIGTERM', () => {
   console.log('\n🛑 SIGTERM received. Shutting down gracefully...');
+  kmSimulator.savePoolSync();
   kmSimulator.stopAutoReplenishment();
   for (const svc of emailServiceMap.values()) svc.close();
   process.exit(0);
@@ -195,6 +197,7 @@ process.on('SIGTERM', () => {
 
 process.on('SIGINT', () => {
   console.log('\n🛑 SIGINT received. Shutting down gracefully...');
+  kmSimulator.savePoolSync();
   kmSimulator.stopAutoReplenishment();
   for (const svc of emailServiceMap.values()) svc.close();
   process.exit(0);

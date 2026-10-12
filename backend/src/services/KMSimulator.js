@@ -5,18 +5,22 @@
 
 import crypto from 'crypto';
 import { EventEmitter } from 'events';
+import fs from 'fs';
+import path from 'path';
 
 class KMSimulator extends EventEmitter {
   constructor(config = {}) {
     super();
     this.poolSize = config.poolSize || 1000;
     this.keySize = config.keySize || 32; // 256 bits
+    this.storagePath = config.storagePath || path.join(process.cwd(), 'keys', 'keypool.json');
     this.keyPool = new Map();
     this.usedKeys = new Set();
     this.replenishmentRate = config.replenishmentRate || 0; // keys per hour
     this.lastReplenishment = Date.now();
+    this.saveTimer = null;
     
-    // Initialize the key pool
+    // Initialize or restore the key pool from persistent disk storage
     this.initializePool();
     
     // Start auto-replenishment if configured
@@ -26,10 +30,59 @@ class KMSimulator extends EventEmitter {
   }
 
   /**
-   * Initialize the quantum key pool with random keys
+   * Initialize the quantum key pool, loading from disk if available
    */
   initializePool() {
-    console.log(`[KM Simulator] Initializing pool with ${this.poolSize} keys...`);
+    try {
+      if (this.storagePath && fs.existsSync(this.storagePath)) {
+        console.log(`[KM Simulator] Loading persistent key pool from ${this.storagePath}...`);
+        const raw = fs.readFileSync(this.storagePath, 'utf8');
+        const data = JSON.parse(raw);
+
+        if (data && data.keys) {
+          for (const [keyId, keyData] of Object.entries(data.keys)) {
+            const isUsed = Boolean(keyData.used);
+            this.keyPool.set(keyId, {
+              keyId: keyData.keyId,
+              keyMaterial: Buffer.from(keyData.keyMaterial, 'base64'),
+              timestamp: keyData.timestamp || Date.now(),
+              used: isUsed
+            });
+            if (isUsed) {
+              this.usedKeys.add(keyId);
+            }
+          }
+          if (data.lastReplenishment) {
+            this.lastReplenishment = data.lastReplenishment;
+          }
+        }
+
+        const available = this.getAvailableKeyCount();
+        console.log(`[KM Simulator] Persistent pool loaded: ${this.keyPool.size} total keys (${available} available, ${this.usedKeys.size} used)`);
+
+        // If available keys are below target poolSize, generate additional keys to maintain capacity
+        if (available < this.poolSize) {
+          const needed = this.poolSize - available;
+          console.log(`[KM Simulator] Generating ${needed} new keys to maintain pool target size of ${this.poolSize}...`);
+          for (let i = 0; i < needed; i++) {
+            const keyId = this.generateKeyId();
+            const keyMaterial = crypto.randomBytes(this.keySize);
+            this.keyPool.set(keyId, {
+              keyId,
+              keyMaterial,
+              timestamp: Date.now(),
+              used: false
+            });
+          }
+          this.savePoolSync();
+        }
+        return;
+      }
+    } catch (err) {
+      console.warn(`[KM Simulator] Failed to load key pool from disk, initializing fresh pool: ${err.message}`);
+    }
+
+    console.log(`[KM Simulator] Initializing fresh pool with ${this.poolSize} keys...`);
     for (let i = 0; i < this.poolSize; i++) {
       const keyId = this.generateKeyId();
       const keyMaterial = crypto.randomBytes(this.keySize);
@@ -41,7 +94,58 @@ class KMSimulator extends EventEmitter {
         used: false
       });
     }
-    console.log(`[KM Simulator] Pool initialized with ${this.keyPool.size} keys`);
+    console.log(`[KM Simulator] Fresh pool initialized with ${this.keyPool.size} keys`);
+    this.savePoolSync();
+  }
+
+  /**
+   * Save the current key pool to disk synchronously
+   */
+  savePoolSync() {
+    if (!this.storagePath) return;
+    try {
+      const dir = path.dirname(this.storagePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      const serializedKeys = {};
+      for (const [keyId, key] of this.keyPool.entries()) {
+        serializedKeys[keyId] = {
+          keyId: key.keyId,
+          keyMaterial: key.keyMaterial.toString('base64'),
+          timestamp: key.timestamp,
+          used: key.used
+        };
+      }
+
+      const payload = {
+        poolSize: this.poolSize,
+        keySize: this.keySize,
+        lastReplenishment: this.lastReplenishment,
+        updatedAt: Date.now(),
+        keys: serializedKeys
+      };
+
+      const tmpPath = `${this.storagePath}.tmp`;
+      fs.writeFileSync(tmpPath, JSON.stringify(payload, null, 2), 'utf8');
+      fs.renameSync(tmpPath, this.storagePath);
+    } catch (err) {
+      console.error(`[KM Simulator] Error saving key pool to disk: ${err.message}`);
+    }
+  }
+
+  /**
+   * Schedule debounced save to prevent excessive disk writes
+   */
+  scheduleSave() {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+    }
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      this.savePoolSync();
+    }, 200);
   }
 
   /**
@@ -90,6 +194,7 @@ class KMSimulator extends EventEmitter {
         // Mark as used
         key.used = true;
         this.usedKeys.add(keyId);
+        this.scheduleSave();
         
         this.emit('keyConsumed', {
           keyId,
@@ -178,20 +283,7 @@ class KMSimulator extends EventEmitter {
   replenishPool(count = 100) {
     console.log(`[KM Simulator] Replenishing pool with ${count} keys...`);
     
-    // Remove used keys to make space
-    const keysToRemove = [];
-    for (const [keyId, key] of this.keyPool.entries()) {
-      if (key.used && keysToRemove.length < count) {
-        keysToRemove.push(keyId);
-      }
-    }
-    
-    keysToRemove.forEach(keyId => {
-      this.keyPool.delete(keyId);
-      this.usedKeys.delete(keyId);
-    });
-    
-    // Add new keys
+    // Add new keys without deleting used keys (used keys must be kept to allow decryption of past emails)
     for (let i = 0; i < count; i++) {
       const keyId = this.generateKeyId();
       const keyMaterial = crypto.randomBytes(this.keySize);
@@ -205,6 +297,8 @@ class KMSimulator extends EventEmitter {
     }
     
     this.lastReplenishment = Date.now();
+    this.savePoolSync();
+
     this.emit('poolReplenished', {
       count,
       availableKeys: this.getAvailableKeyCount()
@@ -248,6 +342,7 @@ class KMSimulator extends EventEmitter {
     this.keyPool.clear();
     this.usedKeys.clear();
     this.initializePool();
+    this.savePoolSync();
     console.log('[KM Simulator] Pool reset');
   }
 
