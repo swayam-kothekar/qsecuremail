@@ -285,13 +285,14 @@ function HowWeSecure() {
 
   useEffect(() => {
     if (!trackRef.current) return;
-    const cardW = trackRef.current.querySelector('.how-card')?.offsetWidth || 0;
-    const gap = 20;
-    trackRef.current.scrollTo({ left: active * (cardW + gap), behavior: 'smooth' });
+    const cards = trackRef.current.querySelectorAll('.how-card');
+    if (cards[active]) {
+      cards[active].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   }, [active]);
 
   return (
-    <section style={{ padding: '140px 0 140px 24px', overflow: 'hidden' }}>
+    <section className="how-section" style={{ padding: '140px 0 140px 24px', overflow: 'hidden' }}>
       {/* Header */}
       <div style={{ maxWidth: 1200, margin: '0 auto 56px', padding: '0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 24 }}>
         <div>
@@ -305,6 +306,7 @@ function HowWeSecure() {
       {/* Scrollable track */}
       <div
         ref={trackRef}
+        className="how-track"
         style={{ display: 'flex', gap: 20, overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', paddingRight: 24, cursor: 'grab' }}
         onMouseDown={e => { const el = e.currentTarget; let startX = e.pageX - el.offsetLeft; let scrollL = el.scrollLeft; const move = ev => { el.scrollLeft = scrollL - (ev.pageX - el.offsetLeft - startX); }; const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); el.style.cursor = 'grab'; }; el.style.cursor = 'grabbing'; window.addEventListener('mousemove', move); window.addEventListener('mouseup', up); }}
       >
@@ -445,10 +447,10 @@ export default function Landing() {
       </nav>
 
       {/* ── Hero ── */}
-      <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', padding: '0 24px' }}>
+      <section className="hero-section" style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', padding: '0 24px' }}>
         <Particles />
         <div className="spotlight" />
-        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: 780 }}>
+        <div className="hero-content" style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: 780 }}>
           <div className="badge" style={{ marginBottom: 28 }}>⚛ QUANTUM-SAFE EMAIL</div>
           <h1 style={{ fontSize: 'clamp(3rem,7vw,6rem)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.025em', marginBottom: 24 }}>
             Turning private into<br />
@@ -466,7 +468,7 @@ export default function Landing() {
             </button>
           </div>
         </div>
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '32px 0', borderTop: '1px solid rgba(255,255,255,0.05)', overflow: 'hidden' }}>
+        <div className="hero-standards-ticker" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '32px 0', borderTop: '1px solid rgba(255,255,255,0.05)', overflow: 'hidden' }}>
           <p style={{ textAlign: 'center', fontSize: 11, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.3)', marginBottom: 20, textTransform: 'uppercase' }}>Built on open standards</p>
           <div style={{ display: 'flex', overflow: 'hidden', whiteSpace: 'nowrap' }}>
             <div style={{ display: 'inline-flex', gap: 56, animation: 'marqueeScroll 30s linear infinite', flexShrink: 0 }}>
@@ -653,11 +655,11 @@ export default function Landing() {
 
 
       {/* ── CTA ── */}
-      <section id="contact" style={{ padding: '140px 24px', position: 'relative', overflow: 'hidden' }}>
+      <section id="contact" className="cta-section" style={{ padding: '140px 24px', position: 'relative', overflow: 'hidden' }}>
         <Particles />
         <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: 640, margin: '0 auto' }}>
           <div className="badge" style={{ marginBottom: 28 }}>GET STARTED</div>
-          <h2 style={{ fontSize: 'clamp(2.5rem,6vw,5rem)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.025em', marginBottom: 24 }}>
+          <h2 className="cta-heading" style={{ fontSize: 'clamp(2.5rem,6vw,5rem)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.025em', marginBottom: 24 }}>
             Ready to secure<br />your communications?
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 17, marginBottom: 44 }}>
@@ -670,8 +672,8 @@ export default function Landing() {
       </section>
 
       {/* ── Footer ── */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 24px' }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+      <footer className="footer-wrap" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 24px', overflow: 'hidden' }}>
+        <div className="container footer-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
           <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13 }}>© 2026 QSecureMail. Built for quantum-safe communication.</p>
           <div style={{ display: 'flex', gap: 12 }}>
             {/* GitHub */}

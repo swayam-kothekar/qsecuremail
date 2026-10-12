@@ -566,6 +566,15 @@ a {
   border: 1px solid rgba(249, 115, 22, 0.2);
 }
 
+/* ─── CTA heading ───────────────────────────────────────────────── */
+.cta-heading {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+
 /* ─── Footer display text ───────────────────────────────────────── */
 .footer-brand-text {
   font-size: clamp(4rem, 10vw, 10rem);
@@ -575,6 +584,7 @@ a {
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
+  max-width: 100%;
 }
 
 /* ─── Mobile Responsiveness & Layout System ──────────────────────── */
@@ -779,6 +789,28 @@ a {
     padding: 20px 16px !important;
   }
 
+  /* Hero on mobile: separate content from bottom ticker to prevent button collision */
+  .hero-section {
+    min-height: auto !important;
+    padding-top: 112px !important;
+    padding-bottom: 32px !important;
+  }
+
+  .hero-content {
+    margin-bottom: 24px !important;
+  }
+
+  .hero-standards-ticker {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 48px !important;
+    padding: 24px 0 12px 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    width: 100% !important;
+  }
+
   /* Landing Navbar on mobile */
   .landing-navbar {
     padding: 0 16px !important;
@@ -792,13 +824,18 @@ a {
     top: 68px !important;
   }
 
-  /* Scale and reposition the decorative orb so it stays as a subtle corner watermark */
+  /* Fully visible, compact corner symbol inside the card */
   .sticky-level-orb {
-    top: -20px !important;
-    right: -20px !important;
-    width: 110px !important;
-    height: 110px !important;
-    opacity: 0.25 !important;
+    top: 22px !important;
+    right: 18px !important;
+    width: 48px !important;
+    height: 48px !important;
+    opacity: 0.55 !important;
+  }
+
+  .sticky-level-orb svg {
+    width: 28px !important;
+    height: 28px !important;
   }
 
   .sticky-level-card h3 {
@@ -815,12 +852,27 @@ a {
     font-size: clamp(3rem, 14vw, 4.5rem) !important;
   }
 
-  /* How We Secure cards on mobile */
+  /* How We Secure: centered cards and track on mobile */
+  .how-section {
+    padding: 80px 0 !important;
+  }
+
+  .how-track {
+    padding: 0 16px !important;
+    gap: 16px !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding: 0 16px !important;
+  }
+
   .how-card {
-    width: calc(100vw - 36px) !important;
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
     min-height: auto !important;
     flex-direction: column !important;
     border-radius: 20px !important;
+    scroll-snap-align: center !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .how-card-left {
@@ -829,6 +881,40 @@ a {
 
   .how-card-right {
     display: none !important;
+  }
+
+  /* CTA Section: stop heading and container horizontal overflow */
+  .cta-section {
+    padding: 80px 20px !important;
+  }
+
+  .cta-heading {
+    font-size: clamp(1.65rem, 7.5vw, 2.4rem) !important;
+    line-height: 1.15 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* Footer on mobile: prevent watermark text and content overflow */
+  .footer-wrap {
+    padding: 24px 16px 16px 16px !important;
+    overflow: hidden !important;
+  }
+
+  .footer-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 16px !important;
+  }
+
+  .footer-brand-text {
+    font-size: clamp(1.6rem, 10.5vw, 3rem) !important;
+    letter-spacing: -0.02em !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    max-width: 100% !important;
+    margin-top: 14px !important;
   }
 
   /* Compose grid on mobile */
