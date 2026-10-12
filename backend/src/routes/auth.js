@@ -15,6 +15,7 @@ const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // 10 attempts per window
   skipSuccessfulRequests: true,
+  validate: { xForwardedForHeader: false },
   handler: (req, res) => {
     logSecurity('rate_limit_exceeded', {
       ip: req.ip,
@@ -108,9 +109,14 @@ router.post('/login', loginLimiter, async (req, res) => {
       });
 
       const isBadCredentials = error.message?.includes('BadCredentials') || error.message?.includes('535');
-      const errorMessage = isBadCredentials
-        ? 'Invalid credentials. Gmail requires a 16-character App Password (not your regular Gmail password). Generate one at https://myaccount.google.com/apppasswords'
-        : (error.message || 'Authentication failed. Please check your email and app password.');
+      const isTimeout = error.code === 'ETIMEDOUT' || error.message?.toLowerCase().includes('timeout') || error.command === 'CONN';
+      
+      let errorMessage = error.message || 'Authentication failed. Please check your email and app password.';
+      if (isBadCredentials) {
+        errorMessage = 'Invalid credentials. Gmail requires a 16-character App Password (not your regular Gmail password). Generate one at https://myaccount.google.com/apppasswords';
+      } else if (isTimeout) {
+        errorMessage = 'Connection to Gmail timed out. Cloud hosting free tiers (like Render Free) block outbound mail ports (587, 465). Upgrade your cloud plan or run the backend locally/on a VPS.';
+      }
 
       res.status(401).json({
         success: false,

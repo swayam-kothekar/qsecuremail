@@ -25,47 +25,58 @@ class EmailService extends EventEmitter {
     // Extract provider from email
     const domain = userEmail.split('@')[1];
     const rejectUnauthorized = process.env.IMAP_REJECT_UNAUTHORIZED === 'true';
+    const smtpPort = parseInt(process.env.SMTP_PORT) || 587;
+    const isSecure = process.env.SMTP_SECURE === 'true' || smtpPort === 465;
     
     let smtpConfig;
     if (domain.includes('gmail')) {
       smtpConfig = {
         host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
+        port: smtpPort,
+        secure: isSecure,
         auth: {
           user: userEmail,
           pass: appPassword
         },
         tls: {
           rejectUnauthorized
-        }
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000
       };
     } else if (domain.includes('outlook') || domain.includes('hotmail')) {
       smtpConfig = {
         host: 'smtp-mail.outlook.com',
-        port: 587,
-        secure: false,
+        port: smtpPort,
+        secure: isSecure,
         auth: {
           user: userEmail,
           pass: appPassword
         },
         tls: {
           rejectUnauthorized
-        }
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000
       };
     } else {
       // Generic SMTP
       smtpConfig = {
         host: `smtp.${domain}`,
-        port: 587,
-        secure: false,
+        port: smtpPort,
+        secure: isSecure,
         auth: {
           user: userEmail,
           pass: appPassword
         },
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000
       };
     }
     
@@ -80,26 +91,33 @@ class EmailService extends EventEmitter {
     const domain = userEmail.split('@')[1];
     // In environments with proxy, antivirus or local CA interception, allow self-signed certs unless strictly enforced
     const rejectUnauthorized = process.env.IMAP_REJECT_UNAUTHORIZED === 'true';
+    const imapPort = parseInt(process.env.IMAP_PORT) || 993;
 
     let cfg;
     if (domain.includes('gmail')) {
       cfg = {
         user: userEmail, password: appPassword,
-        host: 'imap.gmail.com', port: 993, tls: true,
-        tlsOptions: { rejectUnauthorized }
+        host: 'imap.gmail.com', port: imapPort, tls: true,
+        tlsOptions: { rejectUnauthorized },
+        connTimeout: 10000,
+        authTimeout: 10000
       };
     } else if (domain.includes('outlook') || domain.includes('hotmail')) {
       cfg = {
         user: userEmail, password: appPassword,
-        host: 'outlook.office365.com', port: 993, tls: true,
-        tlsOptions: { rejectUnauthorized }
+        host: 'outlook.office365.com', port: imapPort, tls: true,
+        tlsOptions: { rejectUnauthorized },
+        connTimeout: 10000,
+        authTimeout: 10000
       };
     } else {
       // Generic fallback
       cfg = {
         user: userEmail, password: appPassword,
-        host: `imap.${domain}`, port: 993, tls: true,
-        tlsOptions: { rejectUnauthorized: false }
+        host: `imap.${domain}`, port: imapPort, tls: true,
+        tlsOptions: { rejectUnauthorized: false },
+        connTimeout: 10000,
+        authTimeout: 10000
       };
     }
 
