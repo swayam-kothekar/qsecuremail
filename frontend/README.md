@@ -2,9 +2,6 @@
 
 React + Vite frontend for [QSecureMail](../README.md), a QKD-enhanced quantum-safe email client.
 
-> 🚀 **Live Application:** [https://qsecuremail.dev](https://qsecuremail.dev)  
-> 📡 **Production API:** [https://api.qsecuremail.dev](https://api.qsecuremail.dev)
-
 ## Stack
 
 - **React 18** — UI framework
