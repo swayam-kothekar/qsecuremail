@@ -45,7 +45,12 @@ router.get('/recent', (req, res) => {
     
     const allEntries = auditBuffer.getAll();
     const userEntries = allEntries
-      .filter(entry => entry.counterpart === userEmail || entry.direction === 'outgoing')
+      .filter(entry =>
+        // Incoming: this user is the recipient (counterpart is the sender)
+        (entry.direction === 'incoming' && entry.senderEmail === userEmail) ||
+        // Outgoing: this user sent it
+        (entry.direction === 'outgoing' && entry.senderEmail === userEmail)
+      )
       .slice(-limit);
     
     res.json({

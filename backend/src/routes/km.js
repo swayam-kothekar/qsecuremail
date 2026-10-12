@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import { verifyToken } from '../middleware/auth.js';
+import { verifyToken, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router.get('/status', (req, res) => {
  * POST /api/km/replenish
  * Manually trigger pool replenishment
  */
-router.post('/replenish', (req, res) => {
+router.post('/replenish', requireAdmin, (req, res) => {
   try {
     const { count } = req.body;
     const { kmSimulator } = req.app.locals;
@@ -65,7 +65,7 @@ router.post('/replenish', (req, res) => {
  * POST /api/km/reset
  * Reset the key pool to initial state
  */
-router.post('/reset', (req, res) => {
+router.post('/reset', requireAdmin, (req, res) => {
   try {
     const { kmSimulator } = req.app.locals;
     kmSimulator.reset();
@@ -91,7 +91,7 @@ router.post('/reset', (req, res) => {
  * ETSI GS QKD 014 enc_keys endpoint
  * Request a new key from the pool
  */
-router.get('/enc_keys', (req, res) => {
+router.get('/enc_keys', requireAdmin, (req, res) => {
   try {
     const { size } = req.query;
     const { kmSimulator } = req.app.locals;

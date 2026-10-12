@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Logo from '../components/Logo';
 import { Shield, Mail, Key, AlertCircle, Loader, ArrowLeft, ArrowRight } from 'lucide-react';
 
 /* ── Particle system (same as Landing) ─────────────────── */
@@ -40,16 +41,25 @@ function Particles() {
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
+  const { login, isAuthenticated } = useAuth();
+  const [email, setEmail] = useState(() => localStorage.getItem('qsecuremail_last_email') || localStorage.getItem('qsecuremail_email') || '');
   const [appPassword, setAppPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); setLoading(true);
     try {
+      if (email.trim()) {
+        localStorage.setItem('qsecuremail_last_email', email.trim());
+      }
       const result = await login(email, appPassword);
       if (result.success) navigate('/dashboard');
       else setError(result.error || 'Login failed');
@@ -94,8 +104,8 @@ export default function Login() {
           </div>
 
           {/* Icon */}
-          <div style={{ width: 64, height: 64, borderRadius: 20, background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 0 32px rgba(0,212,255,0.12)' }}>
-            <Shield size={28} color="#00d4ff" />
+          <div style={{ margin: '0 auto 20px', display: 'flex', justifyContent: 'center' }}>
+            <Logo size={60} />
           </div>
 
           <h1 style={{ fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.08, marginBottom: 10 }}>Sign in</h1>
@@ -126,12 +136,19 @@ export default function Login() {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {/* Email */}
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Email Address</label>
+                <label htmlFor="email" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Email Address</label>
                 <div style={{ position: 'relative' }}>
                   <Mail size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', pointerEvents: 'none' }} />
                   <input
-                    type="email" value={email} onChange={e => setEmail(e.target.value)}
-                    style={inputStyle} placeholder="your@email.com" required
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    style={inputStyle}
+                    placeholder="your@email.com"
+                    required
                     onFocus={e => { e.target.style.borderColor = 'rgba(0,212,255,0.45)'; e.target.style.background = 'rgba(0,212,255,0.04)'; }}
                     onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(255,255,255,0.04)'; }}
                   />
@@ -140,12 +157,19 @@ export default function Login() {
 
               {/* Password */}
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Google App Password</label>
+                <label htmlFor="appPassword" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Google App Password</label>
                 <div style={{ position: 'relative' }}>
                   <Key size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', pointerEvents: 'none' }} />
                   <input
-                    type="password" value={appPassword} onChange={e => setAppPassword(e.target.value)}
-                    style={inputStyle} placeholder="16-character app password" required
+                    id="appPassword"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={appPassword}
+                    onChange={e => setAppPassword(e.target.value)}
+                    style={inputStyle}
+                    placeholder="16-character app password"
+                    required
                     onFocus={e => { e.target.style.borderColor = 'rgba(0,212,255,0.45)'; e.target.style.background = 'rgba(0,212,255,0.04)'; }}
                     onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(255,255,255,0.04)'; }}
                   />

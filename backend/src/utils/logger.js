@@ -10,7 +10,8 @@ const { combine, timestamp, printf, json } = winston.format;
 
 // Custom format for console output
 const consoleFormat = printf(({ level, message, timestamp, ...metadata }) => {
-  let msg = `${timestamp} [${level.toUpperCase()}] ${message}`;
+  const msgText = typeof message === 'object' ? JSON.stringify(message) : message;
+  let msg = `${timestamp} [${level.toUpperCase()}] ${msgText}`;
   if (Object.keys(metadata).length > 0) {
     msg += ` ${JSON.stringify(metadata)}`;
   }
@@ -80,14 +81,15 @@ export const auditBuffer = new AuditBuffer(100);
 /**
  * Log audit event (email send/receive)
  */
-export function logAudit(direction, counterpart, level, keyId, algorithm) {
+export function logAudit(direction, counterpart, level, keyId, algorithm, senderEmail = null) {
   const entry = {
     timestamp: new Date().toISOString(),
     direction, // 'outgoing' or 'incoming'
     counterpart,
     level,
     keyId: keyId ? keyId.substring(0, 8) : 'N/A',
-    algorithm
+    algorithm,
+    ...(senderEmail && { senderEmail })
   };
   
   auditLogger.info(entry);

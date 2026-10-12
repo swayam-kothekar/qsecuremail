@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import Logo from '../components/Logo';
 import { Shield, Lock, Key, Activity, ArrowRight, Menu, X, Zap, Server, Database, FileCheck } from 'lucide-react';
 
 /* ── Particle system ─────────────────────────────────────── */
@@ -108,6 +110,7 @@ function useReveal() {
 /* ── Nav overlay ─────────────────────────────────────────── */
 function NavOverlay({ open, onClose }) {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const go = (path) => {
     onClose();
     if (path.startsWith('#')) {
@@ -118,6 +121,13 @@ function NavOverlay({ open, onClose }) {
       navigate(path);
     }
   };
+
+  const navLinks = [
+    ['/', 'Home'],
+    [isAuthenticated ? '/dashboard' : '/login', isAuthenticated ? 'Dashboard' : 'Sign In'],
+    ['#features', 'Features']
+  ];
+
   return (
     <div className={`nav-overlay ${open ? 'open' : ''}`}>
       <div className="nav-overlay-bg" onClick={onClose} />
@@ -126,7 +136,7 @@ function NavOverlay({ open, onClose }) {
           <X size={24} />
         </button>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {[['/', 'Home'], ['/login', 'Sign In'], ['#features', 'Features']].map(([href, label]) => (
+          {navLinks.map(([href, label]) => (
             <a key={label} href={href} className="nav-link-big" onClick={(e) => { e.preventDefault(); go(href); }}>{label}</a>
           ))}
         </nav>
@@ -382,6 +392,7 @@ function HowWeSecure() {
 /* ── Main Landing ────────────────────────────────────────── */
 export default function Landing() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -407,17 +418,42 @@ export default function Landing() {
         borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
         transition: 'all 0.4s ease',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-            {[0, 1, 2, 3].map(i => (
-              <div key={i} style={{ width: 9, height: 9, borderRadius: i === 3 ? '50%' : 2, background: '#fff', opacity: 0.9 }} />
-            ))}
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/')}>
+          <Logo size={28} />
           <span style={{ fontWeight: 700, fontSize: 16, letterSpacing: '-0.01em' }}>QSecureMail</span>
         </div>
-        <button onClick={() => setNavOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500 }}>
-          <Menu size={20} />
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            onClick={() => navigate(isAuthenticated ? '/dashboard' : '/login')}
+            style={{
+              background: isAuthenticated ? 'rgba(0,212,255,0.1)' : 'rgba(255,255,255,0.08)',
+              border: isAuthenticated ? '1px solid rgba(0,212,255,0.3)' : '1px solid rgba(255,255,255,0.12)',
+              color: isAuthenticated ? '#00d4ff' : '#fff',
+              borderRadius: 999,
+              padding: '6px 16px',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit'
+            }}
+          >
+            {isAuthenticated ? (
+              <>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#00d4ff', boxShadow: '0 0 8px #00d4ff' }} />
+                Dashboard
+              </>
+            ) : (
+              'Sign In'
+            )}
+          </button>
+          <button onClick={() => setNavOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500 }}>
+            <Menu size={20} />
+          </button>
+        </div>
       </nav>
 
       {/* ── Hero ── */}
@@ -434,8 +470,8 @@ export default function Landing() {
             Quantum-safe email encryption with adaptive security. Three levels of protection powered by QKD and post-quantum cryptography.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary" onClick={() => navigate('/login')}>
-              Get started <ArrowRight size={16} />
+            <button className="btn-primary" onClick={() => navigate(isAuthenticated ? '/dashboard' : '/login')}>
+              {isAuthenticated ? 'Go to Dashboard' : 'Get started'} <ArrowRight size={16} />
             </button>
             <button className="btn-secondary" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
               Learn more
@@ -644,8 +680,8 @@ export default function Landing() {
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 17, marginBottom: 44 }}>
             Experience quantum-safe email encryption today.
           </p>
-          <button className="btn-primary" onClick={() => navigate('/login')} style={{ fontSize: 16, padding: '16px 40px' }}>
-            Sign in now <ArrowRight size={18} />
+          <button className="btn-primary" onClick={() => navigate(isAuthenticated ? '/dashboard' : '/login')} style={{ fontSize: 16, padding: '16px 40px' }}>
+            {isAuthenticated ? 'Open Dashboard' : 'Sign in now'} <ArrowRight size={18} />
           </button>
         </div>
       </section>

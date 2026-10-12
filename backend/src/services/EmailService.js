@@ -24,6 +24,7 @@ class EmailService extends EventEmitter {
   initializeSMTP(userEmail, appPassword) {
     // Extract provider from email
     const domain = userEmail.split('@')[1];
+    const rejectUnauthorized = process.env.IMAP_REJECT_UNAUTHORIZED === 'true';
     
     let smtpConfig;
     if (domain.includes('gmail')) {
@@ -34,6 +35,9 @@ class EmailService extends EventEmitter {
         auth: {
           user: userEmail,
           pass: appPassword
+        },
+        tls: {
+          rejectUnauthorized
         }
       };
     } else if (domain.includes('outlook') || domain.includes('hotmail')) {
@@ -44,6 +48,9 @@ class EmailService extends EventEmitter {
         auth: {
           user: userEmail,
           pass: appPassword
+        },
+        tls: {
+          rejectUnauthorized
         }
       };
     } else {
@@ -55,6 +62,9 @@ class EmailService extends EventEmitter {
         auth: {
           user: userEmail,
           pass: appPassword
+        },
+        tls: {
+          rejectUnauthorized: false
         }
       };
     }
@@ -68,21 +78,24 @@ class EmailService extends EventEmitter {
    */
   initializeIMAP(userEmail, appPassword) {
     const domain = userEmail.split('@')[1];
+    // In environments with proxy, antivirus or local CA interception, allow self-signed certs unless strictly enforced
+    const rejectUnauthorized = process.env.IMAP_REJECT_UNAUTHORIZED === 'true';
 
     let cfg;
     if (domain.includes('gmail')) {
       cfg = {
         user: userEmail, password: appPassword,
         host: 'imap.gmail.com', port: 993, tls: true,
-        tlsOptions: { rejectUnauthorized: false }
+        tlsOptions: { rejectUnauthorized }
       };
     } else if (domain.includes('outlook') || domain.includes('hotmail')) {
       cfg = {
         user: userEmail, password: appPassword,
         host: 'outlook.office365.com', port: 993, tls: true,
-        tlsOptions: { rejectUnauthorized: false }
+        tlsOptions: { rejectUnauthorized }
       };
     } else {
+      // Generic fallback
       cfg = {
         user: userEmail, password: appPassword,
         host: `imap.${domain}`, port: 993, tls: true,

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Logo from '../components/Logo';
 import { Shield, Inbox, Send, Settings, LogOut, Home, ChevronLeft, ChevronRight } from 'lucide-react';
 import DashboardHome from './dashboard/Home';
 import InboxPage from './dashboard/Inbox';
@@ -38,12 +39,11 @@ export default function Dashboard() {
         position: 'relative',
       }}>
         {/* Logo */}
-        <div style={{ padding: collapsed ? '24px 0' : '24px 20px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid rgba(255,255,255,0.06)', justifyContent: collapsed ? 'center' : 'flex-start' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, flexShrink: 0 }}>
-            {[0,1,2,3].map(i => (
-              <div key={i} style={{ width: 8, height: 8, borderRadius: i === 3 ? '50%' : 2, background: '#fff' }} />
-            ))}
-          </div>
+        <div 
+          onClick={() => navigate('/dashboard')}
+          style={{ padding: collapsed ? '24px 0' : '24px 20px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid rgba(255,255,255,0.06)', justifyContent: collapsed ? 'center' : 'flex-start', cursor: 'pointer' }}
+        >
+          <Logo size={24} />
           {!collapsed && (
             <div>
               <p style={{ fontWeight: 700, fontSize: 14, color: '#fff', lineHeight: 1.2 }}>QSecureMail</p>

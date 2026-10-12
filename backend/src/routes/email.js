@@ -98,7 +98,7 @@ router.post('/send', async (req, res) => {
     aspe.recordEmailSent();
     
     // Log audit
-    logAudit('outgoing', to, selectedLevel, securityProfile.keyId, encryptedPayload.algorithm);
+    logAudit('outgoing', to, selectedLevel, securityProfile.keyId, encryptedPayload.algorithm, from);
     
     res.json({
       success: true,
@@ -156,7 +156,8 @@ router.get('/inbox', async (req, res) => {
               email.from,
               email.encryptedPayload.level,
               email.encryptedPayload.keyId || email.encryptedPayload.keyIds?.[0],
-              email.encryptedPayload.algorithm
+              email.encryptedPayload.algorithm,
+              userEmail
             );
             
             return {
@@ -207,14 +208,35 @@ router.get('/inbox', async (req, res) => {
  */
 router.get('/count', async (req, res) => {
   try {
-    const { emailService } = req.app.locals;
-    
-    // This is a simplified version - in production, you'd query IMAP for total count
-    res.json({
-      success: true,
-      total: 100 // Placeholder
+    const { emailServiceMap } = req.app.locals;
+    const userEmail = req.user.email;
+    const emailService = emailServiceMap.get(userEmail);
+
+    if (!emailService) {
+      return res.status(401).json({ success: false, error: 'Email service not initialized. Please login again.' });
+    }
+
+    if (!emailService.imapConfig) {
+      return res.status(401).json({ success: false, error: 'IMAP not initialized. Please login again.' });
+    }
+
+    const Imap = (await import('imap')).default;
+    const imap = new Imap(emailService.imapConfig);
+
+    const total = await new Promise((resolve, reject) => {
+      imap.once('ready', () => {
+        imap.openBox('INBOX', true, (err, box) => {
+          imap.end();
+          if (err) return reject(err);
+          resolve(box.messages.total);
+        });
+      });
+      imap.once('error', reject);
+      imap.connect();
     });
-    
+
+    res.json({ success: true, total });
+
   } catch (error) {
     console.error('Get count error:', error);
     res.status(500).json({

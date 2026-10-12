@@ -17,8 +17,12 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('qsecuremail_token');
+    const email = localStorage.getItem('qsecuremail_email');
+    return (token && email) ? { email } : null;
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in

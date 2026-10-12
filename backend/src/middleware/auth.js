@@ -5,8 +5,18 @@
 
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'qsecuremail-secret-change-in-production';
-const JWT_EXPIRY = '24h';
+if (!process.env.JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('FATAL: JWT_SECRET environment variable is not set. Set it to a strong random value: openssl rand -hex 64');
+  } else {
+    console.warn('⚠️  WARNING: JWT_SECRET is not set. Using an insecure default. Set it before deploying!');
+  }
+}
+const JWT_EXPIRY = '7d';
+
+export function getJwtSecret() {
+  return process.env.JWT_SECRET || 'qsecuremail-dev-only-insecure-default-do-not-deploy';
+}
 
 /**
  * Generate JWT token for authenticated user
@@ -14,7 +24,7 @@ const JWT_EXPIRY = '24h';
 export function generateToken(email) {
   return jwt.sign(
     { email, timestamp: Date.now() },
-    JWT_SECRET,
+    getJwtSecret(),
     { expiresIn: JWT_EXPIRY }
   );
 }
@@ -35,7 +45,7 @@ export function verifyToken(req, res, next) {
   const token = authHeader.substring(7);
   
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = decoded;
     next();
   } catch (error) {

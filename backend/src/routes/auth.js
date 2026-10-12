@@ -5,7 +5,7 @@
 
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import { generateToken } from '../middleware/auth.js';
+import { generateToken, getJwtSecret } from '../middleware/auth.js';
 import { logSecurity } from '../utils/logger.js';
 
 const router = express.Router();
@@ -47,13 +47,16 @@ router.post('/login', loginLimiter, async (req, res) => {
         error: 'Email and app password are required'
       });
     }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const cleanPassword = appPassword.trim().replace(/\s+/g, '');
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       logSecurity('login_failed', {
         reason: 'invalid_email',
-        email,
+        email: normalizedEmail,
         ip: req.ip
       });
       
@@ -72,41 +75,46 @@ router.post('/login', loginLimiter, async (req, res) => {
       const userService = new EmailService();
 
       // Test SMTP connection
-      userService.initializeSMTP(email, appPassword);
+      userService.initializeSMTP(normalizedEmail, cleanPassword);
       await userService.transporter.verify();
 
       // Initialize IMAP
-      userService.initializeIMAP(email, appPassword);
+      userService.initializeIMAP(normalizedEmail, cleanPassword);
 
       // Store in per-user map
-      emailServiceMap.set(email, userService);
+      emailServiceMap.set(normalizedEmail, userService);
 
       // Generate or load ML-KEM keypair
-      await keypairManager.getOrCreateKeypair(email);
+      await keypairManager.getOrCreateKeypair(normalizedEmail);
 
       // Generate JWT token
-      const token = generateToken(email);
+      const token = generateToken(normalizedEmail);
 
-      logSecurity('login_success', { email, ip: req.ip });
+      logSecurity('login_success', { email: normalizedEmail, ip: req.ip });
 
       res.json({
         success: true,
         token,
-        email,
+        email: normalizedEmail,
         message: 'Login successful'
       });
 
     } catch (error) {
       logSecurity('login_failed', {
         reason: 'authentication_error',
-        email,
+        email: normalizedEmail,
         error: error.message,
         ip: req.ip
       });
 
+      const isBadCredentials = error.message?.includes('BadCredentials') || error.message?.includes('535');
+      const errorMessage = isBadCredentials
+        ? 'Invalid credentials. Gmail requires a 16-character App Password (not your regular Gmail password). Generate one at https://myaccount.google.com/apppasswords'
+        : (error.message || 'Authentication failed. Please check your email and app password.');
+
       res.status(401).json({
         success: false,
-        error: 'Authentication failed. Please check your email and app password.'
+        error: errorMessage
       });
     }
     
@@ -134,19 +142,21 @@ router.post('/verify', async (req, res) => {
 
   try {
     const jwt = await import('jsonwebtoken');
-    const JWT_SECRET = process.env.JWT_SECRET || 'qsecuremail-secret-change-in-production';
-    const decoded = jwt.default.verify(token, JWT_SECRET);
+    const decoded = jwt.default.verify(token, getJwtSecret());
 
     // Check THIS user's service is initialized (not a global singleton)
     const { emailServiceMap } = req.app.locals;
-    const userService = emailServiceMap.get(decoded.email);
+    const userEmail = decoded.email?.toLowerCase();
+    const userService = emailServiceMap.get(userEmail) || emailServiceMap.get(decoded.email);
     if (!userService?.imapConnection) {
+      console.warn(`[Verify] Email service not initialized for ${decoded.email}`);
       return res.json({ valid: false, reason: 'service_reset' });
     }
 
     res.json({ valid: true, email: decoded.email });
   } catch (error) {
-    res.json({ valid: false });
+    console.error('[Verify] Token verification error:', error.message);
+    res.json({ valid: false, reason: error.message });
   }
 });
 
