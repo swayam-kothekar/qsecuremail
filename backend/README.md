@@ -2,9 +2,6 @@
 
 Backend server for QSecureMail - A QKD-Enhanced Email System with Adaptive Security Policy Engine and Hybrid QKD⊕PQC Encryption.
 
-> 🚀 **Live Frontend Demo:** [https://qsecuremail.dev](https://qsecuremail.dev)  
-> 📡 **Live API Endpoint:** [https://api.qsecuremail.dev](https://api.qsecuremail.dev) (Health: [`/api/health`](https://api.qsecuremail.dev/api/health))
-
 ## Features
 
 - **ETSI GS QKD 014 Compliant KM Simulator**: Simulates quantum key distribution
