@@ -69,7 +69,7 @@ export default function Settings() {
   const poolHealth = parseFloat(kmStatus?.poolHealth || 0);
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', color: '#fff', padding: 40, maxWidth: 1000, margin: '0 auto' }}>
+    <div className="dashboard-page-wrap" style={{ maxWidth: 1000 }}>
       <div style={{ marginBottom: 36 }}>
         <div className="badge" style={{ marginBottom: 16 }}>SETTINGS</div>
         <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', marginBottom: 6 }}>System Settings</h1>

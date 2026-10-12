@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { emailAPI } from '../../services/api';
-import { Mail, Lock, Clock, User, Loader, AlertCircle, RefreshCw, Search, X, Shield, ChevronDown } from 'lucide-react';
+import { Mail, Lock, Clock, User, Loader, AlertCircle, RefreshCw, Search, X, Shield, ChevronDown, ArrowLeft } from 'lucide-react';
 
 export default function Inbox() {
   const [emails, setEmails] = useState([]);
@@ -72,7 +72,7 @@ export default function Inbox() {
   return (
     <div style={{ ...s, display: 'flex', height: '100%', background: '#080808' }}>
       {/* List */}
-      <div style={{ width: selectedEmail ? '380px' : '100%', flexShrink: 0, borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', transition: 'width 0.3s ease' }}>
+      <div className={`inbox-list-panel ${selectedEmail ? 'is-hidden-mobile' : ''}`} style={{ width: selectedEmail ? '380px' : '100%', flexShrink: 0, borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', transition: 'width 0.3s ease' }}>
         {/* Header */}
         <div style={{ padding: '28px 24px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -162,8 +162,16 @@ export default function Inbox() {
 
       {/* Detail */}
       {selectedEmail && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="inbox-detail-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div className="inbox-detail-header" style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            {/* Mobile back button */}
+            <button
+              onClick={() => setSelectedEmail(null)}
+              className="inbox-mobile-back"
+              style={{ display: 'none', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: 600, cursor: 'pointer', marginBottom: 14 }}
+            >
+              <ArrowLeft size={13} /> Back to messages
+            </button>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.01em', flex: 1, paddingRight: 16 }}>{selectedEmail.subject || '(No Subject)'}</h2>
               <button onClick={() => setSelectedEmail(null)} style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -173,7 +181,7 @@ export default function Inbox() {
             {[['From', selectedEmail.from], ['To', selectedEmail.to], ['Date', new Date(selectedEmail.date).toLocaleString()]].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', gap: 12, marginBottom: 6 }}>
                 <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', minWidth: 40 }}>{k}</span>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{v}</span>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', wordBreak: 'break-all' }}>{v}</span>
               </div>
             ))}
             {selectedEmail.encrypted && (
@@ -185,7 +193,7 @@ export default function Inbox() {
               </div>
             )}
           </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px' }}>
+          <div className="inbox-detail-body" style={{ flex: 1, overflowY: 'auto', padding: '28px 32px' }}>
             {selectedEmail.encrypted && selectedEmail.decrypted && (
               <div style={{ marginBottom: 20, padding: '12px 16px', background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.15)', borderRadius: 10, display: 'flex', gap: 10, alignItems: 'center' }}>
                 <Shield size={14} color="#4ade80" />

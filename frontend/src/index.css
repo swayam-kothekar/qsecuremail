@@ -576,3 +576,295 @@ a {
   white-space: nowrap;
   overflow: hidden;
 }
+
+/* ─── Mobile Responsiveness & Layout System ──────────────────────── */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  background: #080808;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+.dashboard-sidebar-desktop {
+  width: 220px;
+  flex-shrink: 0;
+  background: #0a0a0a;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+  overflow: hidden;
+  position: relative;
+  z-index: 30;
+}
+
+.dashboard-sidebar-collapsed {
+  width: 64px !important;
+}
+
+.dashboard-mobile-header {
+  display: none;
+}
+
+.dashboard-bottom-bar {
+  display: none;
+}
+
+.dashboard-mobile-drawer {
+  display: none;
+}
+
+.dashboard-main-content {
+  flex: 1;
+  overflow-y: auto;
+  background: #080808;
+}
+
+.dashboard-page-wrap {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+/* Landing Page Responsive Components */
+.landing-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  transition: all 0.4s ease;
+}
+
+.sticky-level-card {
+  position: sticky;
+  margin-bottom: 24px;
+  border-radius: 28px;
+  overflow: hidden;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 52px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+}
+
+.sticky-level-orb {
+  position: absolute;
+  top: 40px;
+  right: 52px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.numbers-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 56px 80px;
+}
+
+.numbers-stat-num {
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+
+.how-card {
+  flex-shrink: 0;
+  width: clamp(680px, 72vw, 860px);
+  min-height: 420px;
+  border-radius: 24px;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  overflow: hidden;
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+  position: relative;
+}
+
+.how-card-left {
+  flex: 1;
+  padding: 44px 48px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.how-card-right {
+  width: 38%;
+  background: #080808;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.compose-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ─── Media Query: Mobile Screens (<= 768px) ──────────────────────── */
+@media (max-width: 768px) {
+  /* Dashboard layout */
+  .dashboard-layout {
+    flex-direction: column !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+
+  .dashboard-sidebar-desktop {
+    display: none !important;
+  }
+
+  .dashboard-mobile-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 56px !important;
+    padding: 0 16px !important;
+    background: #0a0a0a !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .dashboard-bottom-bar {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 60px !important;
+    background: rgba(10, 10, 10, 0.94) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    z-index: 45 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 0 8px !important;
+  }
+
+  .dashboard-main-content {
+    padding-bottom: 76px !important;
+    width: 100% !important;
+  }
+
+  .dashboard-page-wrap {
+    padding: 20px 16px !important;
+  }
+
+  /* Landing Navbar on mobile */
+  .landing-navbar {
+    padding: 0 16px !important;
+  }
+
+  /* Sticky Level Cards on mobile */
+  .sticky-level-card {
+    min-height: auto !important;
+    padding: 24px 20px !important;
+    border-radius: 20px !important;
+    top: 68px !important;
+  }
+
+  /* Scale and reposition the decorative orb so it stays as a subtle corner watermark */
+  .sticky-level-orb {
+    top: -20px !important;
+    right: -20px !important;
+    width: 110px !important;
+    height: 110px !important;
+    opacity: 0.25 !important;
+  }
+
+  .sticky-level-card h3 {
+    font-size: 1.65rem !important;
+  }
+
+  /* Numbers Stats Grid on mobile: Clean 1-column stack with zero horizontal overflow */
+  .numbers-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px 0 !important;
+  }
+
+  .numbers-stat-num {
+    font-size: clamp(3rem, 14vw, 4.5rem) !important;
+  }
+
+  /* How We Secure cards on mobile */
+  .how-card {
+    width: calc(100vw - 36px) !important;
+    min-height: auto !important;
+    flex-direction: column !important;
+    border-radius: 20px !important;
+  }
+
+  .how-card-left {
+    padding: 28px 20px !important;
+  }
+
+  .how-card-right {
+    display: none !important;
+  }
+
+  /* Compose grid on mobile */
+  .compose-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Inbox on mobile */
+  .inbox-list-panel {
+    width: 100% !important;
+    border-right: none !important;
+  }
+
+  .inbox-list-panel.is-hidden-mobile {
+    display: none !important;
+  }
+
+  .inbox-mobile-back {
+    display: inline-flex !important;
+  }
+
+  .inbox-detail-panel {
+    width: 100% !important;
+  }
+
+  .inbox-detail-header {
+    padding: 16px 18px !important;
+  }
+
+  .inbox-detail-body {
+    padding: 18px 16px !important;
+  }
+
+  /* Dashboard headings on mobile */
+  .dashboard-page-wrap h1 {
+    font-size: 26px !important;
+  }
+}

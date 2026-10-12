@@ -25,19 +25,32 @@ export default function Dashboard() {
     exact ? location.pathname === path : location.pathname.startsWith(path);
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: '#080808', fontFamily: 'Inter, sans-serif' }}>
-      {/* Sidebar */}
-      <aside style={{
-        width: collapsed ? 64 : 220,
-        flexShrink: 0,
-        background: '#0a0a0a',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'width 0.3s cubic-bezier(0.76,0,0.24,1)',
-        overflow: 'hidden',
-        position: 'relative',
-      }}>
+    <div className="dashboard-layout">
+      {/* Mobile Top Header (<= 768px) */}
+      <header className="dashboard-mobile-header">
+        <div 
+          onClick={() => navigate('/dashboard')}
+          style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
+        >
+          <Logo size={22} />
+          <span style={{ fontWeight: 700, fontSize: 15, color: '#fff' }}>QSecureMail</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#00d4ff' }}>{user?.email?.charAt(0).toUpperCase()}</span>
+          </div>
+          <button
+            onClick={() => { logout(); navigate('/login'); }}
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            title="Logout"
+          >
+            <LogOut size={15} />
+          </button>
+        </div>
+      </header>
+
+      {/* Desktop Sidebar (> 768px) */}
+      <aside className={`dashboard-sidebar-desktop ${collapsed ? 'dashboard-sidebar-collapsed' : ''}`}>
         {/* Logo */}
         <div 
           onClick={() => navigate('/dashboard')}
@@ -114,7 +127,7 @@ export default function Dashboard() {
       </aside>
 
       {/* Main content */}
-      <main style={{ flex: 1, overflow: 'auto', background: '#080808' }}>
+      <main className="dashboard-main-content">
         <Routes>
           <Route path="/" element={<DashboardHome />} />
           <Route path="/inbox" element={<InboxPage />} />
@@ -122,6 +135,36 @@ export default function Dashboard() {
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
+
+      {/* Mobile Bottom Navigation Bar (<= 768px) */}
+      <nav className="dashboard-bottom-bar">
+        {menuItems.map(item => {
+          const active = isActive(item.path, item.exact);
+          return (
+            <button
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 4,
+                background: 'transparent',
+                border: 'none',
+                color: active ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                cursor: 'pointer',
+                padding: '6px 12px',
+                borderRadius: 8,
+                transition: 'all 0.15s ease'
+              }}
+            >
+              {item.icon}
+              <span style={{ fontSize: 10, fontWeight: active ? 600 : 500, letterSpacing: '0.02em' }}>{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 }

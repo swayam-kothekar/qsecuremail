@@ -314,26 +314,14 @@ function HowWeSecure() {
             className="how-card"
             onClick={() => setActive(i)}
             style={{
-              flexShrink: 0,
-              width: 'clamp(680px, 72vw, 860px)',
-              minHeight: 420,
-              borderRadius: 24,
-              background: '#111',
-              border: '1px solid rgba(255,255,255,0.06)',
-              display: 'flex',
-              overflow: 'hidden',
-              scrollSnapAlign: 'start',
-              cursor: 'pointer',
-              transition: 'box-shadow 0.3s',
               boxShadow: active === i ? '0 0 0 1.5px rgba(255,255,255,0.12), 0 32px 80px rgba(0,0,0,0.5)' : '0 8px 32px rgba(0,0,0,0.3)',
-              position: 'relative',
             }}
           >
             {/* Dot pattern overlay */}
             <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle, ${step.dotColor} 1px, transparent 1px)`, backgroundSize: '24px 24px', pointerEvents: 'none' }} />
 
             {/* Left: step info */}
-            <div style={{ flex: 1, padding: '44px 48px', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+            <div className="how-card-left">
               {/* Top row: step number + arrow */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'auto' }}>
                 <span style={{ fontSize: 56, fontWeight: 800, color: 'rgba(255,255,255,0.08)', lineHeight: 1, letterSpacing: '-0.04em' }}>{step.num}</span>
@@ -343,11 +331,11 @@ function HowWeSecure() {
               </div>
 
               {/* Bottom: content */}
-              <div style={{ marginTop: 40 }}>
-                <h3 style={{ fontSize: 'clamp(1.6rem,2.5vw,2.2rem)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 16, whiteSpace: 'pre-line' }}>
+              <div style={{ marginTop: 32 }}>
+                <h3 style={{ fontSize: 'clamp(1.5rem,2.5vw,2.2rem)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 16, whiteSpace: 'pre-line' }}>
                   {step.title}
                 </h3>
-                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, lineHeight: 1.7, marginBottom: 28, maxWidth: 340 }}>
+                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, lineHeight: 1.7, marginBottom: 24, maxWidth: 380 }}>
                   {step.desc}
                 </p>
                 <div style={{ display: 'inline-flex', padding: '5px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.5)' }}>
@@ -357,7 +345,7 @@ function HowWeSecure() {
             </div>
 
             {/* Right: SVG illustration */}
-            <div style={{ width: '38%', background: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', flexShrink: 0, borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+            <div className="how-card-right">
               <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle, ${step.dotColor} 1px, transparent 1px)`, backgroundSize: '20px 20px' }} />
               {/* Ambient glow behind illustration */}
               <div style={{ position: 'absolute', width: 220, height: 220, borderRadius: '50%', background: `radial-gradient(circle, ${step.accent}22 0%, transparent 70%)`, zIndex: 0 }} />
@@ -563,23 +551,18 @@ export default function Landing() {
             ].map((card, i) => (
               <div
                 key={i}
+                className="sticky-level-card"
                 style={{
-                  position: 'sticky',
                   top: card.top,
-                  marginBottom: 24,
-                  borderRadius: 28,
                   background: card.bg,
-                  overflow: 'hidden',
-                  minHeight: 480,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '48px 52px',
                   zIndex: 10 + i,
-                  boxShadow: `0 32px 80px rgba(0,0,0,0.5)`,
                 }}
               >
-                {/* Large decorative icon — top right */}
-                <div style={{ position: 'absolute', top: 40, right: 52, width: 200, height: 200, borderRadius: '50%', background: card.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 0 60px ${card.accent}30` }}>
+                {/* Large decorative icon — top right on desktop, watermark corner on mobile */}
+                <div 
+                  className="sticky-level-orb"
+                  style={{ background: card.iconBg, boxShadow: `0 0 60px ${card.accent}30` }}
+                >
                   {card.iconSvg}
                 </div>
 
@@ -591,7 +574,7 @@ export default function Landing() {
                   </div>
 
                   {/* Title */}
-                  <h3 style={{ fontSize: 'clamp(2rem,4vw,3rem)', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.1, color: card.accent, marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.1, color: card.accent, marginBottom: 16 }}>
                     {card.title}
                   </h3>
 
@@ -640,8 +623,8 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Big stats — 2×2 grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '56px 80px' }}>
+          {/* Big stats — responsive grid */}
+          <div className="numbers-stats-grid">
             {[
               { n: 3, suf: '+', label: 'Encryption Levels', dot: '#ef4444' },
               { n: 100, suf: '%', label: 'Quantum-Safe Emails', dot: '#a3e635' },
@@ -652,7 +635,7 @@ export default function Landing() {
                 {/* Dot + number row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
                   <div style={{ width: 12, height: 12, borderRadius: '50%', background: dot, flexShrink: 0, boxShadow: `0 0 8px ${dot}99` }} />
-                  <span style={{ fontSize: 'clamp(4rem,9vw,8rem)', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: '#fff' }}>
+                  <span className="numbers-stat-num">
                     <CountUp target={n} suffix={suf} />
                   </span>
                 </div>

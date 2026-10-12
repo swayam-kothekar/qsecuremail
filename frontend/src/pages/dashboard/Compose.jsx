@@ -81,14 +81,14 @@ export default function Compose() {
   const recLevel = aspeRecommendation?.recommendedLevel || 3;
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', color: '#fff', padding: 40, maxWidth: 1200, margin: '0 auto' }}>
+    <div className="dashboard-page-wrap">
       <div style={{ marginBottom: 36 }}>
         <div className="badge" style={{ marginBottom: 16 }}>COMPOSE</div>
         <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', marginBottom: 6 }}>Compose Email</h1>
         <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 14 }}>Send quantum-safe encrypted messages</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+      <div className="compose-grid">
         {/* Form */}
         <form onSubmit={handleSend} style={{ background: '#111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
           {success && (

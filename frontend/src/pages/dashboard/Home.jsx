@@ -68,7 +68,7 @@ export default function Home() {
   );
 
   return (
-    <div style={{ padding: '40px', fontFamily: 'Inter, sans-serif', color: '#fff', maxWidth: 1200, margin: '0 auto' }}>
+    <div className="dashboard-page-wrap">
       {/* Header */}
       <div style={{ marginBottom: 40 }}>
         <div className="badge" style={{ marginBottom: 16 }}>DASHBOARD</div>
