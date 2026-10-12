@@ -83,18 +83,19 @@ export default function Login() {
       {/* Spotlight glow */}
       <div className="spotlight" />
 
-      {/* Back */}
-      <button
-        onClick={() => navigate('/')}
-        style={{ position: 'fixed', top: 24, left: 24, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 999, padding: '8px 18px', color: 'rgba(255,255,255,0.6)', fontSize: 13, cursor: 'pointer', zIndex: 10, transition: 'all 0.2s', fontFamily: 'inherit' }}
-        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.09)'}
-        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-      >
-        <ArrowLeft size={14} /> Back
-      </button>
-
       {/* Main card */}
-      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 460 }}>
+      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 460, display: 'flex', flexDirection: 'column' }}>
+
+        {/* Back */}
+        <button
+          onClick={() => navigate('/')}
+          className="login-back-btn"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 999, padding: '8px 18px', color: 'rgba(255,255,255,0.6)', fontSize: 13, cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'inherit' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.09)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+        >
+          <ArrowLeft size={14} /> Back
+        </button>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -113,11 +114,10 @@ export default function Login() {
         </div>
 
         {/* Form card — matches landing page sticky card style */}
-        <div style={{
+        <div className="login-card" style={{
           background: '#111',
           border: '1px solid rgba(255,255,255,0.08)',
           borderRadius: 24,
-          padding: '36px 36px 32px',
           position: 'relative',
           overflow: 'hidden',
         }}>
@@ -219,7 +219,30 @@ export default function Login() {
         </div>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .login-back-btn {
+          position: fixed;
+          top: 24px;
+          left: 24px;
+          z-index: 10;
+        }
+        @media (max-width: 640px) {
+          .login-back-btn {
+            position: static;
+            margin-bottom: 20px;
+            align-self: flex-start;
+          }
+        }
+        .login-card {
+          padding: 36px 36px 32px;
+        }
+        @media (max-width: 480px) {
+          .login-card {
+            padding: 26px 20px 24px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
