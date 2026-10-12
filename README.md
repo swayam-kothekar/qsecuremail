@@ -2,6 +2,11 @@
 
 **A QKD-Enhanced Email System with Adaptive Security Policy Engine and Hybrid QKD⊕PQC Encryption**
 
+> 🚀 **Live Demo:** [https://qsecuremail.dev](https://qsecuremail.dev)  
+> 📡 **API Endpoint:** [https://api.qsecuremail.dev](https://api.qsecuremail.dev) (Health: [`/api/health`](https://api.qsecuremail.dev/api/health))
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-qsecuremail.dev-00C7B7?style=flat&logo=safari&logoColor=white)](https://qsecuremail.dev)
+[![API Status](https://img.shields.io/badge/API-Online%20(AWS%20EC2)-232F3E?style=flat&logo=amazon-aws&logoColor=white)](https://api.qsecuremail.dev/api/health)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-24%2B-green.svg)](https://nodejs.org/)
 [![Vite](https://img.shields.io/badge/Frontend-Vite%20%2B%20React-646CFF.svg)](https://vitejs.dev/)
