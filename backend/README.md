@@ -108,8 +108,8 @@ backend/
 ## Architecture Notes
 
 - **Per-user EmailService**: Each authenticated user gets their own `EmailService` instance stored in an `emailServiceMap` keyed by email address. Logging in with a second account does not affect the first user's IMAP connection.
-- **Fresh IMAP per fetch**: A new `Imap` connection is created for each inbox fetch (reusing a connection after `.end()` crashes the imap parser). A `_fetchingEmails` semaphore prevents concurrent fetches.
-- **Key pool is in-memory**: The `KMSimulator` generates a new pool on every server start. Emails encrypted in a previous session will show a decryption error after restart (expected for a simulator).
+- **Persistent & Universal Key Pool**: The `KMSimulator` persists keys to disk (`keys/keypool.json`). Used keys are permanently retained in storage so emails encrypted in any session remain decryptable across server restarts, reboots, and redeployments, while auto-replenishment keeps the available key count topped up.
+- **Dual Route Mounts**: Endpoints are mounted on both `/api/*` and `/*` (e.g., `/api/auth/login` and `/auth/login`) for reverse proxy and frontend base URL compatibility.
 - **JWT + session integrity**: `/api/auth/verify` checks both the JWT signature and whether this user's `EmailService` is initialized. If the backend restarted, the token is invalidated to force re-login.
 
 ## Security Features
