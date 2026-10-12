@@ -93,15 +93,24 @@ app.locals.emailServiceMap = emailServiceMap;
 
 console.log('\n✅ All services initialized successfully!\n');
 
-// Routes
+// Routes (mounted on both /api/* and /* for flexibility)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/email', emailRoutes);
+app.use('/email', emailRoutes);
+
 app.use('/api/aspe', aspeRoutes);
+app.use('/aspe', aspeRoutes);
+
 app.use('/api/km', kmRoutes);
+app.use('/km', kmRoutes);
+
 app.use('/api/audit', auditRoutes);
+app.use('/audit', auditRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   const kmStatus = kmSimulator.getStatus();
   const aspeStatus = aspe.getStatus();
   
