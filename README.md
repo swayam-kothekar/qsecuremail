@@ -10,7 +10,7 @@
   </p>
 
   <p>
-    <a href="https://qsecuremail.dev"><strong>Explore Live Demo »</strong></a>
+    <a href="https://qsecuremail.dev"><strong>Live Demo »</strong> qsecuremail.dev</a>
   </p>
 
   <p>
