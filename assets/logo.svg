@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#0a0a0a" />
+  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" stroke="rgba(0,212,255,0.4)" stroke-width="2" />
+  <!-- Quantum Orbital Rings -->
+  <ellipse cx="32" cy="32" rx="23" ry="8.5" stroke="#00d4ff" stroke-width="2" transform="rotate(-30 32 32)" opacity="0.65"/>
+  <ellipse cx="32" cy="32" rx="23" ry="8.5" stroke="#00d4ff" stroke-width="2" transform="rotate(30 32 32)" opacity="0.65"/>
+  <!-- Quantum Shield -->
+  <path d="M32 16L44 21.5V32.5C44 40.5 38.5 46.5 32 49C25.5 46.5 20 40.5 20 32.5V21.5L32 16Z" fill="rgba(0,212,255,0.18)" stroke="#00d4ff" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Quantum Core Node -->
+  <circle cx="32" cy="32.5" r="4" fill="#ffffff" />
+  <circle cx="32" cy="32.5" r="2" fill="#00d4ff" />
+</svg>

@@ -1,18 +1,44 @@
-# QSecureMail
+<div align="center">
+  <img src="assets/logo.svg" width="96" height="96" alt="QSecureMail Logo" />
 
-**A QKD-Enhanced Email System with Adaptive Security Policy Engine and Hybrid QKD⊕PQC Encryption**
+  # QSecureMail
 
-> 🚀 **Live Demo:** [https://qsecuremail.dev](https://qsecuremail.dev)  
+  **A QKD-Enhanced Email System with Adaptive Security Policy Engine and Hybrid QKD⊕PQC Encryption**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-qsecuremail.dev-00C7B7?style=flat&logo=safari&logoColor=white)](https://qsecuremail.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-24%2B-green.svg)](https://nodejs.org/)
-[![Vite](https://img.shields.io/badge/Frontend-Vite%20%2B%20React-646CFF.svg)](https://vitejs.dev/)
-[![Security: Post-Quantum](https://img.shields.io/badge/Security-ML--KEM--1024%20%2B%20QKD-brightgreen.svg)]()
+  <p>
+    A quantum-safe email client that wraps standard Gmail / IMAP accounts with three tiers of post-quantum encryption, dynamically governed by an Adaptive Security Policy Engine (ASPE) based on real-time quantum key pool health and message size.
+  </p>
+
+  <p>
+    <a href="https://qsecuremail.dev"><strong>Explore Live Demo »</strong></a>
+  </p>
+
+  <p>
+    <a href="#overview">Overview</a> &middot;
+    <a href="#encryption-levels">Encryption Levels</a> &middot;
+    <a href="#system-architecture">System Architecture</a> &middot;
+    <a href="#quick-start-local-development">Quick Start</a> &middot;
+    <a href="#key-features--security-enhancements">Key Features</a> &middot;
+    <a href="#api-reference">API Reference</a>
+  </p>
+
+  <p>
+    <a href="https://qsecuremail.dev"><img src="https://img.shields.io/badge/LIVE%20DEMO-QSECUREMAIL.DEV-7c3aed?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" /></a>
+    <img src="https://img.shields.io/badge/SECURITY-ML--KEM--1024%20%2B%20QKD-059669?style=for-the-badge" alt="Security: Post-Quantum" />
+    <br />
+    <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-3b82f6?style=for-the-badge" alt="License: MIT" /></a>
+  </p>
+
+  <p>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-24%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24+" /></a>
+    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /></a>
+    <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /></a>
+  </p>
+</div>
 
 ---
 
-## Overview
+<h2 id="overview">📖 Overview</h2>
 
 QSecureMail is a fully functional quantum-safe email client that wraps standard Gmail / IMAP accounts with three tiers of post-quantum encryption, dynamically governed by an **Adaptive Security Policy Engine (ASPE)** based on real-time quantum key pool health and message size.
 
