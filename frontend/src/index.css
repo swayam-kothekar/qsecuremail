@@ -915,6 +915,7 @@ a {
     text-overflow: clip !important;
     max-width: 100% !important;
     margin-top: 14px !important;
+    color: rgba(255, 255, 255, 0.15) !important;
   }
 
   /* Compose grid on mobile */

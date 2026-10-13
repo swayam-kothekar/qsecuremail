@@ -283,11 +283,21 @@ function HowWeSecure() {
     setActive(a => Math.max(0, Math.min(HOW_STEPS.length - 1, a + dir)));
   };
 
+  const isFirstMount = useRef(true);
+
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;                          // skip on initial render — prevents page auto-scroll
+    }
     if (!trackRef.current) return;
     const cards = trackRef.current.querySelectorAll('.how-card');
     if (cards[active]) {
-      cards[active].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      const card = cards[active];
+      const track = trackRef.current;
+      const trackLeft = track.getBoundingClientRect().left;
+      const cardLeft = card.getBoundingClientRect().left;
+      track.scrollBy({ left: cardLeft - trackLeft - (track.clientWidth / 2 - card.clientWidth / 2), behavior: 'smooth' });
     }
   }, [active]);
 
@@ -324,12 +334,9 @@ function HowWeSecure() {
 
             {/* Left: step info */}
             <div className="how-card-left">
-              {/* Top row: step number + arrow */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'auto' }}>
+              {/* Top row: step number */}
+              <div style={{ marginBottom: 'auto' }}>
                 <span style={{ fontSize: 56, fontWeight: 800, color: 'rgba(255,255,255,0.08)', lineHeight: 1, letterSpacing: '-0.04em' }}>{step.num}</span>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12 L12 2 M12 2 H5 M12 2 V9" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </div>
               </div>
 
               {/* Bottom: content */}
