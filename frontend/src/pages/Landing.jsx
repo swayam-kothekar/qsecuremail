@@ -55,7 +55,7 @@ function RotatingWord() {
     return () => clearInterval(t);
   }, []);
   return (
-    <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+    <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom', paddingBottom: '0.12em' }}>
       <span style={{
         display: 'inline-block',
         transition: 'transform 0.52s cubic-bezier(0.76,0,0.24,1), opacity 0.52s ease',
